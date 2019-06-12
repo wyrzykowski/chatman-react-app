@@ -1,25 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+
+import css from './css/main.css'
+
+import "bootstrap/dist/css/bootstrap.css";
 import './App.css';
+import {Route,Switch,Redirect,Router} from 'react-router-dom';
+import Chat from "./components/chat/chat";
+import Login from "./components/login";
+
 
 function App() {
+
+    const user = {};
+
+   
+
+
+
+
+   
+
+
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+   <div>
+       <Switch>
+           <Route path="/login"  exact  render={(props)=><Login   {...props} />} />
+           <Route path="/chatman"  exact render={(props)=><Chat    {...props} />} />
+
+           <Redirect exact from="/" to="/login"/>
+       </Switch>
+   </div>
   );
 }
 
