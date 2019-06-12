@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import Message from "./message";
-import Typing from 'react-typing-animation';
+
 import {receiveMessage,getType} from "./../../api";
 class Conversation extends Component {
     state={
@@ -8,20 +8,29 @@ class Conversation extends Component {
         typingUsers:[]
     };
 
+    clearAllType(){
+        let oldState = this.state;
+        const newMessages = this.state.messages.filter(el=>{
+            return el.type!=="info";
+        });
+        oldState.messages=newMessages;
+        this.setState({oldState});
+    }
 
     clearType=(user)=>{
         let oldState = this.state;
-        const newTypingUsers = this.state.typingUsers.filter(el=>{
-            return el.username!==user.username;
+        const newMessages = this.state.messages.filter(el=>{
+            return el.username!==user.username || el.type!=="info";
         });
-        oldState.typingUsers=newTypingUsers;
+        oldState.messages=newMessages;
         this.setState({oldState});
     };
-    
+
     constructor(props){
         super(props);
         receiveMessage((message)=>{
-            message = {...message,author: "stranger"};
+            this.clearAllType();
+            message = {...message,author: "stranger",type:'message'};
             const oldMessages = this.state.messages;
             oldMessages.push(message);
             this.setState({message:oldMessages});
@@ -29,17 +38,20 @@ class Conversation extends Component {
 
         getType((typingUsername)=>{
 
-            const sameUser = this.state.typingUsers.find((el)=>{
-                return el.username===typingUsername.username;
+            const sameUser = this.state.messages.find((el)=>{
+                return el.username===typingUsername.username && el.type==="info";
             });
 
             if(typingUsername.username!==window.username && sameUser === undefined){
-                let oldState = this.state;
-                oldState.typingUsers.push(typingUsername);
-                this.setState({oldState});
+
+                let message = {author: "stranger",type:'info',username:typingUsername.username};
+                const oldMessages = this.state.messages;
+                oldMessages.push(message);
+                this.setState({message:oldMessages});
+
                 setTimeout(()=>{
                     this.clearType(typingUsername);
-                },2500)
+                },1500)
 
             }
 
@@ -72,29 +84,29 @@ class Conversation extends Component {
 
 
     render() {
+        console.log("MESSAGE TAB",this.state.messages)
 
         return (
             <div  ref={(div) => {
                 this.messageList = div;
             }} className={"scroll"}>
 
-<div>
+
                 {
-                    this.state.messages.map((message) => {
-                        return  <Message  message={message.text} username={message.username} author={message.author}  createdAt={message.createdAt} key={message.createdAt}/>
+
+                    this.state.messages.map((message,index) => {
+                        console.log(message);
+                        return(
+                        <div>
+                            <Message type={message.type}  message={message.text} username={message.username} author={message.author}  createdAt={message.createdAt} key={message.createdAt}/>
+
+                        </div>
+                        )
                     })
                 }
-</div>
-                <div className="is-typing message">
-                    {
-                        this.state.typingUsers.map(el=>{
-                            return <Typing>
-                                <span>{el.username} is typing...</span>
-                            </Typing>
-                        })
-                    }
 
-                </div>
+                
+
             </div>
         );
     }

@@ -1,5 +1,10 @@
 import * as socketIo from 'socket.io-client';
-const socket = socketIo("http://localhost:3001");
+
+let url;
+if(process.env.REACT_APP_API_URL) url = process.env.REACT_APP_API_URL;
+else url ="http://localhost:3001";
+
+const socket = socketIo(url);
 
 function communicateWithServerChat(callback){
 

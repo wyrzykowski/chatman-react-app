@@ -16,10 +16,10 @@ state={
         const message = this.state.newMessage;
         const data = this.state;
         sendMessage(message,()=>{
-            this.setState({newMessage:"",buttonBlocked:true});
+
         })
 
-
+        this.setState({newMessage:"",buttonBlocked:true});
        
     };
 

@@ -160,10 +160,7 @@ body{
 }
 
 .is-typing{
-    display: block;
-    top: 50px;
-    /*bottom:20vh;*/
-    /*right:2vw;*/
+    float:left;
 }
 
 
